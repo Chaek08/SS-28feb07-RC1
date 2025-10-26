@@ -60,6 +60,7 @@
 #include "../../stalker_decision_space.h"
 #include "../../agent_member_manager.h"
 #include "../../location_manager.h"
+#include "../ai_object_location_impl.h"
 
 #ifdef DEBUG
 #	include "../../alife_simulator.h"

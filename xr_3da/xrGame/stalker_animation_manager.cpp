@@ -22,6 +22,11 @@
 //    * globals
 //    * script
 
+CStalkerAnimationManager::EBodyState CStalkerAnimationManager::body_state() const
+{
+	return (object().movement().body_state());
+}
+
 void CStalkerAnimationManager::reinit				()
 {
 	m_direction_start			= 0;

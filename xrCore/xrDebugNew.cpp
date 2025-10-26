@@ -11,6 +11,7 @@
 #include <direct.h>
 #pragma warning(pop)
 
+
 extern bool shared_str_initialized;
 
 #ifdef __BORLANDC__
@@ -682,11 +683,15 @@ LONG WINAPI UnhandledFilter	(_EXCEPTION_POINTERS *pExceptionInfo)
     _CRTIMP int		__cdecl _set_new_mode( int );
     _CRTIMP _PNH	__cdecl _set_new_handler( _PNH );
 
+	static void __cdecl def_new_handler()
+	{
+		_out_of_memory(static_cast<size_t>(~0u));
+	}
+
     void	xrDebug::_initialize		()
     {
 		handler							= 0;
-        _set_new_mode					(1);					// gen exception if can't allocate memory
-        _set_new_handler				(_out_of_memory	);		// exception-handler for 'out of memory' condition
+		std::set_new_handler			(def_new_handler);
 		std::set_terminate				(_terminate);
 		std::set_unexpected				(_terminate);
 #ifdef USE_BUG_TRAP

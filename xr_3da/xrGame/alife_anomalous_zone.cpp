@@ -92,7 +92,8 @@ void CSE_ALifeAnomalousZone::spawn_artefacts				()
 			if (fSum > fProbability)
 				break;
 		}
-		if (p < n) {
+		u16 p = 0;
+		for (; p < n; ++p) {
 			CSE_Abstract		*l_tpSE_Abstract = alife().spawn_item(*m_weights[p].first,position(),m_tNodeID,m_tGraphID,0xffff);
 			R_ASSERT3			(l_tpSE_Abstract,"Can't spawn artefact ",*m_weights[p].first);
 			CSE_ALifeDynamicObject	*i = smart_cast<CSE_ALifeDynamicObject*>(l_tpSE_Abstract);

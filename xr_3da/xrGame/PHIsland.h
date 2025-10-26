@@ -12,9 +12,9 @@
 
 class CPHIslandFlags
 {
-	static const	base				=8		;
-	static const	shift_to_variable	=base/2	;
-	static const	mask_static			=0xf	;
+	static constexpr unsigned int	base				=8		;
+	static constexpr unsigned int	shift_to_variable	=base/2	;
+	static constexpr unsigned int	mask_static			=0xf	;
 	Flags8			flags						;
 
 	enum 

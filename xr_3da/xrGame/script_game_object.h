@@ -18,19 +18,15 @@ enum EPdaMsg;
 enum ESoundTypes;
 enum ETaskState;
 
-namespace ALife {enum ERelationType;};
-namespace ScriptEntity {enum EActionType;};
-namespace MovementManager { enum EPathType;};
-namespace DetailPathManager { enum EDetailPathType;};
-namespace SightManager {enum ESightType;};
+#include "script_entity_space.h"
+#include "movement_manager_space.h"
+#include "detail_path_manager_space.h"
+#include "sight_manager_space.h"
 
 class NET_Packet;
 class CGameTask;
 
-namespace PatrolPathManager { 
-	enum EPatrolStartType;
-	enum EPatrolRouteType;
-};
+#include "patrol_path_manager_space.h"
 
 namespace MemorySpace {
 	struct CMemoryInfo;
@@ -58,9 +54,7 @@ namespace MonsterSpace {
 	struct SBoneRotation;
 };
 
-namespace GameObject {
-	enum ECallbackType;
-};
+#include "game_object_space.h"
 
 class CGameObject;
 class CScriptHit;
@@ -565,3 +559,5 @@ extern void sell_condition	(float friend_factor, float enemy_factor);
 extern void buy_condition	(CScriptIniFile *ini_file, LPCSTR section);
 extern void buy_condition	(float friend_factor, float enemy_factor);
 extern void show_condition	(CScriptIniFile *ini_file, LPCSTR section);
+
+#include "script_game_object_impl.h"

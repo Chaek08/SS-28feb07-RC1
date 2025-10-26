@@ -46,6 +46,7 @@
 #include "alife_simulator.h"
 #include "alife_object_registry.h"
 #include "client_spawn_manager.h"
+#include "ai_object_location_impl.h"
 
 #ifdef DEBUG
 #	include "debug_renderer.h"
