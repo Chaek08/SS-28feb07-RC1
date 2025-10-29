@@ -65,8 +65,8 @@
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>x:\binaries\</OutDir>
-    <IntDir>x:\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\bin</OutDir>
+    <IntDir>$(SolutionDir)$(Configuration)\intermediate\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">
@@ -134,6 +134,7 @@
       <BrowseInformation />
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>$(SolutionDir)\SDK\dxSDK\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -143,8 +144,11 @@
       <SubSystem>NotSet</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <ImportLibrary>x:\libraries\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>
+      </ImportLibrary>
       <TargetMachine>NotSet</TargetMachine>
+      <AdditionalLibraryDirectories>$(SolutionDir)\SDK\dxSDK\Lib;$(SolutionDir)$(Configuration)\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">
@@ -306,6 +310,8 @@
     <ClCompile Include="log.cpp" />
     <ClCompile Include="LzHuf.cpp" />
     <ClCompile Include="memory_allocation_stats.cpp" />
+    <ClCompile Include="memory_alloc_pure.cpp" />
+    <ClCompile Include="memory_alloc_xr.cpp" />
     <ClCompile Include="memory_monitor.cpp" />
     <ClCompile Include="memory_usage.cpp" />
     <ClCompile Include="rt_compressor.cpp" />
@@ -328,7 +334,6 @@
     <ClCompile Include="xrDebugNew.cpp" />
     <ClCompile Include="xrMemory.cpp" />
     <ClCompile Include="xrMemory_align.cpp" />
-    <ClCompile Include="xrMemory_debug.cpp" />
     <ClCompile Include="xrMemory_POOL.cpp" />
     <ClCompile Include="xrMemory_pso_Copy.cpp">
       <AssemblerOutput Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">AssemblyAndSourceCode</AssemblerOutput>
@@ -388,6 +393,8 @@
     </CustomBuild>
     <ClInclude Include="log.h" />
     <ClInclude Include="lzhuf.h" />
+    <ClInclude Include="memory_alloc_pure.h" />
+    <ClInclude Include="memory_alloc_xr.h" />
     <ClInclude Include="memory_monitor.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="rt_compressor.h" />

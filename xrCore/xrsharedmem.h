@@ -50,10 +50,7 @@ public:
 	void				clean			();
 	void				dump			();
 	u32					stat_economy	();
-#ifdef PROFILE_CRITICAL_SECTIONS
-						smem_container	():cs(MUTEX_PROFILE_ID(smem_container)){}
-#endif // PROFILE_CRITICAL_SECTIONS
-						~smem_container	();
+	~smem_container		();
 };
 XRCORE_API	extern		smem_container*	g_pSharedMemoryContainer;
 

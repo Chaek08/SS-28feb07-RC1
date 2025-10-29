@@ -33,9 +33,6 @@ public:
 	void				dump			();
 	void				verify			();
 	u32					stat_economy	();
-#ifdef PROFILE_CRITICAL_SECTIONS
-						str_container	():cs(MUTEX_PROFILE_ID(str_container)){}
-#endif // PROFILE_CRITICAL_SECTIONS
 						~str_container	();
 };
 XRCORE_API	extern		str_container*	g_pStringContainer;

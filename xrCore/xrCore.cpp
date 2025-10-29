@@ -29,7 +29,7 @@ extern xr_vector <shared_str>	LogFile;
 void xrCore::_initialize	(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs, LPCSTR fs_fname)
 {
 	strcpy					(ApplicationName,_ApplicationName);
-	if (0==init_counter) {
+	if (0==init_counter) {	
 #ifdef XRCORE_STATIC	
 		_clear87	();
 		_control87	( _PC_53,   MCW_PC );
@@ -42,29 +42,14 @@ void xrCore::_initialize	(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs,
 
 		strlwr				(strcpy(Params,GetCommandLine()));
 
-		string_path		fn,dr,di;
-
 		// application path
+        string_path		fn,dr,di;
         GetModuleFileName(GetModuleHandle(MODULE_NAME),fn,sizeof(fn));
         _splitpath		(fn,dr,di,0,0);
-        strconcat		(ApplicationPath,dr,di);
-#ifndef _EDITOR        
-		strcpy			(g_application_path,ApplicationPath);
-#endif
-		// application data path
-//.		R_CHK			(GetEnvironmentVariable("APPDATA",fn,sizeof(fn)));
-//.		u32 fn_len		= xr_strlen(fn);
-//.		if (fn_len && fn[fn_len-1]=='\\') fn[fn_len-1]=0;
+        strconcat		(ApplicationPath,dr,di);                                       
 
 		// working path
 		GetCurrentDirectory(sizeof(WorkingPath),WorkingPath);
-
-//.		strconcat		(ApplicationDataPath,fn,"\\",COMPANY_NAME,"\\",PRODUCT_NAME);
-//.			strcpy			(ApplicationDataPath, ApplicationPath);
-//.			strcpy			(ApplicationDataPath, "_AppData_");
-
-//			_splitpath		(fn,dr,di,0,0);
-//			strconcat		(ApplicationDataPath,dr,di);                                       
 
 		// User/Comp Name
 		DWORD	sz_user		= sizeof(UserName);
@@ -75,19 +60,13 @@ void xrCore::_initialize	(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs,
 
 		// Mathematics & PSI detection
 		CPU::Detect			();
-		
-		Memory._initialize	(strstr(Params,"-mem_debug") ? TRUE : FALSE);
-
-		DUMP_PHASE;
-
+		if (strstr(Params,"-mem_debug"))	Memory._initialize		(TRUE);
+		else								Memory._initialize		(FALSE);
 		_initialize_cpu		();
-
-//		Debug._initialize	();
+		Debug._initialize	();
 
 		rtc_initialize		();
-
 		xr_FS				= xr_new<CLocatorAPI>	();
-
 		xr_EFS				= xr_new<EFS_Utils>		();
 	}
 	if (init_fs){
@@ -101,14 +80,15 @@ void xrCore::_initialize	(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs,
 		flags 				&=~ CLocatorAPI::flCacheFiles;
 #endif
 		flags |= CLocatorAPI::flScanAppRoot;
+		
+#ifndef	_EDITOR
+	#ifndef ELocatorAPIH
 		if (0!=strstr(Params,"-file_activity"))	 flags |= CLocatorAPI::flDumpFileActivity;
+	#endif
+#endif
 
 		FS._initialize		(flags,0,fs_fname);
 		EFS._initialize		();
-#ifdef DEBUG
-		Msg					("CRT heap 0x%08x",_get_heap_handle());
-		Msg					("Process heap 0x%08x",GetProcessHeap());
-#endif // DEBUG
 	}
 	SetLogCB				(cb);
 	init_counter++;

@@ -339,15 +339,8 @@ void __cdecl xrDebug::fatal(const char *file, int line, const char *function, co
 
 int __cdecl _out_of_memory	(size_t size)
 {
-	Memory.mem_compact		();
-	u32						crt_heap		= mem_usage_impl((HANDLE)_get_heap_handle(),0,0);
-	u32						process_heap	= mem_usage_impl(GetProcessHeap(),0,0);
-	int						eco_strings		= (int)g_pStringContainer->stat_economy			();
-	int						eco_smem		= (int)g_pSharedMemoryContainer->stat_economy	();
-	Msg						("* [x-ray]: crt heap[%d K], process heap[%d K]",crt_heap/1024,process_heap/1024);
-	Msg						("* [x-ray]: economy: strings[%d K], smem[%d K]",eco_strings/1024,eco_smem);
-	Debug.fatal				(DEBUG_INFO,"Out of memory. Memory request: %d K",size/1024);
-	return					1;
+	Debug.fatal				(DEBUG_INFO, "Out of memory. Memory request: %d K", size / 1024);
+	return                  1;
 }
 
 void __cdecl _terminate		()

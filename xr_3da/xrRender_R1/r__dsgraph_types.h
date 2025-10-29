@@ -9,34 +9,68 @@
 #ifdef USE_DOUG_LEA_ALLOCATOR_FOR_RENDER
 #	include	"doug_lea_memory_allocator.h"
 
+	extern "C" {
+		void* dlmalloc(std::size_t);
+		void  dlfree(void*);
+	}
+
 	template <class T>
 	class doug_lea_alloc {
 	public:
-		typedef	size_t		size_type;
-		typedef ptrdiff_t	difference_type;
-		typedef T*			pointer;
-		typedef const T*	const_pointer;
-		typedef T&			reference;
-		typedef const T&	const_reference;
-		typedef T			value_type;
+		typedef std::size_t   size_type;
+		typedef std::ptrdiff_t difference_type;
+		typedef T*            pointer;
+		typedef const T*      const_pointer;
+		typedef T&            reference;
+		typedef const T&      const_reference;
+		typedef T             value_type;
+
+		template<class _Other>
+		struct rebind { typedef doug_lea_alloc<_Other> other; };
 
 	public:
-		template<class _Other>	
-		struct rebind			{	typedef doug_lea_alloc<_Other> other;	};
-	public:
-								pointer					address			(reference _Val) const					{	return (&_Val);	}
-								const_pointer			address			(const_reference _Val) const			{	return (&_Val);	}
-														doug_lea_alloc	()										{	}
-														doug_lea_alloc	(const doug_lea_alloc<T>&)				{	}
-		template<class _Other>							doug_lea_alloc	(const doug_lea_alloc<_Other>&)			{	}
-		template<class _Other>	doug_lea_alloc<T>&		operator=		(const doug_lea_alloc<_Other>&)			{	return (*this);	}
-								pointer					allocate		(size_type n, const void* p=0) const	{	return (T*)dlmalloc(sizeof(T)*(u32)n);	}
-								char _FARQ *			_Charalloc		(size_type n)							{	return (char _FARQ *)allocate(n); }
-								void					deallocate		(pointer p, size_type n) const			{	dlfree	(p);				}
-								void					deallocate		(void _FARQ* p, size_type n) const		{	dlfree	(p);				}
-								void					construct		(pointer p, const T& _Val)				{	std::_Construct(p, _Val);	}
-								void					destroy			(pointer p)								{	std::_Destroy(p);			}
-								size_type				max_size		() const								{	size_type _Count = (size_type)(-1) / sizeof (T);	return (0 < _Count ? _Count : 1);	}
+		doug_lea_alloc() noexcept {}
+		doug_lea_alloc(const doug_lea_alloc&) noexcept {}
+
+		template<class U>
+		doug_lea_alloc(const doug_lea_alloc<U>&) noexcept {}
+
+		template<class U>
+		doug_lea_alloc& operator=(const doug_lea_alloc<U>&) noexcept { return *this; }
+
+		pointer allocate(size_type n, const void* = 0) {
+			if (n == 0) n = 1;
+			void* p = dlmalloc(n * sizeof(T));
+			if (!p) throw std::bad_alloc();
+			return static_cast<pointer>(p);
+		}
+
+		void deallocate(pointer p, size_type) noexcept {
+			dlfree(static_cast<void*>(p));
+		}
+
+		void construct(pointer p, const T& v) {
+			::new ((void*)p) T(v);
+		}
+
+		template <class... Args>
+		void construct(pointer p, Args&&... args) {
+			::new ((void*)p) T(std::forward<Args>(args)...);
+		}
+
+		void destroy(pointer p) noexcept {
+			p->~T();
+		}
+
+		size_type max_size() const noexcept {
+			return static_cast<size_type>(-1) / sizeof(T);
+		}
+
+		template<class U>
+		bool operator==(const doug_lea_alloc<U>&) const noexcept { return true; }
+
+		template<class U>
+		bool operator!=(const doug_lea_alloc<U>&) const noexcept { return false; }
 	};
 
 	template<class _Ty,	class _Other>	inline	bool operator==(const doug_lea_alloc<_Ty>&, const doug_lea_alloc<_Other>&)		{	return (true);							}

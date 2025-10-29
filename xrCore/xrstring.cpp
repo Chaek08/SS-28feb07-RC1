@@ -12,9 +12,9 @@ str_value*	str_container::dock		(str_c value)
 	if (0==value)				return 0;
 
 	cs.Enter					();
-#ifdef DEBUG_MEMORY_MANAGER
+#ifdef DEBUG
 	Memory.stat_strdock			++	;
-#endif // DEBUG_MEMORY_MANAGER
+#endif
 
 	str_value*	result			= 0	;
 
@@ -47,16 +47,11 @@ str_value*	str_container::dock		(str_c value)
 	// it may be the case, string is not fount or has "non-exact" match
 	if (0==result)				{
 		// Insert string
-//		DUMP_PHASE;
-
 		result					= (str_value*)Memory.mem_alloc(HEADER+s_len_with_zero
-#ifdef DEBUG_MEMORY_NAME
+#ifdef DEBUG
 			, "storage: sstring"
-#endif // DEBUG_MEMORY_NAME
+#endif
 			);
-
-//		DUMP_PHASE;
-
 		result->dwReference		= 0;
 		result->dwLength		= sv->dwLength;
 		result->dwCRC			= sv->dwCRC;
@@ -99,7 +94,7 @@ void		str_container::verify	()
 		str_value*	sv		= *it;
 		u32			crc		= crc32	(sv->value,sv->dwLength);
 		string32	crc_str;
-		R_ASSERT3	(crc==sv->dwCRC, "CorePanic: read-only memory corruption (shared_strings)", itoa(sv->dwCRC,crc_str,16));
+		R_ASSERT3	(crc==sv->dwCRC, "CorePanic: read-only memory corruption (shared_strings)", _itoa(sv->dwCRC,crc_str,16));
 		R_ASSERT3	(sv->dwLength == xr_strlen(sv->value), "CorePanic: read-only memory corruption (shared_strings, internal structures)", sv->value);
 	}
 	cs.Leave	();
@@ -122,18 +117,15 @@ u32			str_container::stat_economy		()
 	cs.Enter	();
 	cdb::iterator	it		= container.begin	();
 	cdb::iterator	end		= container.end		();
-	int				counter	= 0;
-	counter			-= sizeof(*this);
-	counter			-= sizeof(cdb::allocator_type);
-	const int		node_size = 20;
+	s32				counter	= 0;
 	for (; it!=end; it++)	{
-		counter		-= HEADER;
-		counter		-= node_size;
-		counter		+= int((int((*it)->dwReference) - 1)*int((*it)->dwLength + 1));
+		counter		+=		(*it)->dwReference * (*it)->dwLength;
+		counter		-=		(*it)->dwLength;
+		counter		-=		HEADER;
 	}
-	cs.Leave		();
+	cs.Leave	();
 
-	return			u32(counter);
+	return		u32(counter);
 }
 
 str_container::~str_container		()

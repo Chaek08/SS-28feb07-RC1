@@ -4,4 +4,8 @@
     <LocalDebuggerWorkingDirectory>..\..\..\GAMES1\S.T.A.L.K.E.R. Original 1.0000</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LocalDebuggerWorkingDirectory>..\..\..\GAMES1\S.T.A.L.K.E.R. Original 1.0000</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
 </Project>

@@ -21,7 +21,7 @@ extern bool	g_b_ClearGameCaptions;
 
 void CLevel::remove_objects	()
 {
-	Memory.dbg_check();
+	//Memory.dbg_check();
 	BOOL						b_stored = psDeviceFlags.test(rsDisableObjectsAsCrows);
 
 	Game().reset_ui				();
